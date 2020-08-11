@@ -6,15 +6,19 @@ require 'sinatra/reloader'
 require 'pony'
 require 'sqlite3'
 
+def get_db
+	return SQLite3::Database.new 'BarberShop.db'
+end
+
 configure do
-	@db = SQLite3::Database.new 'BarberShop.db'
-	@db.execute	'CREATE TABLE IF NOT EXISTS
+	db = get_db
+	db.execute	'CREATE TABLE IF NOT EXISTS
 			"Users" (
 			"id" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
     		"username" TEXT,
     		"phone" TEXT,
     		"datestamp" TEXT,
-    		"narber" TEXT,
+    		"barber" TEXT,
     		"color" TEXT)'
 end
 
@@ -57,10 +61,16 @@ post '/visit' do
 	@title = "Поздравляем!"
 	@message = "#{@username}, вы успешно записались в Barber Shop.<br />Мы будем ждать вас #{@date}.<br />Ваш парикмахер: #{@barber}.<br />Выбранный цвет: #{@color}.<br />В случае измений мы позвоним вам на номер #{@phone}."
 
-	
+
+
+db = get_db
+
+	db.execute 'INSERT INTO Users (username, phone, datestamp, barber, color) VALUES (?, ?, ?, ?, ?)', [@username, @phone, @date, @barber, @color]
 
 	erb :message
 end
+
+
 
 get '/contacts' do
 	erb :contacts
@@ -97,3 +107,5 @@ post '/contacts' do
 
 	erb :message
 end
+
+
