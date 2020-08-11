@@ -7,7 +7,9 @@ require 'pony'
 require 'sqlite3'
 
 def get_db
-	return SQLite3::Database.new 'BarberShop.db'
+		db = SQLite3::Database.new 'BarberShop.db'
+		db.results_as_hash = true
+		return db
 end
 
 configure do
@@ -106,6 +108,10 @@ post '/contacts' do
 	@message = "Мы внимательно изучим ваше послание и дадим ответ на почту #{@mail}."
 
 	erb :message
+end
+
+get '/showusers' do
+	erb "Hello World"
 end
 
 
