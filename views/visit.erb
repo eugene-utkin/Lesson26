@@ -8,8 +8,24 @@
 <script type="text/javascript">
     $(function(){
       $('#color').simplecolorpicker();
+
+      $('#datetimepicker').datetimepicker({
+    format: 'DD/MM/YYYY - HH:mm',
+    // added formatTime 
+    formatTime: 'HH:mm',
+    lang: 'en',
+    startDate: moment().toDate(),
+    minDate: moment().toDate(),
+    maxDate: moment().add(20, "days").toDate(),
+  });
+      $.datetimepicker.setDateFormatter('moment');
+      $("#startDateTime").datetimepicker({ formatDate: 'd/m/Y', timepicker: true });
+      $("#endDateTime").datetimepicker({ formatDate: 'd/m/Y', timepicker: true });
     });
 </script>
+
+
+
 <p>На этой странице вы сможете записаться к нам в Barber Shop</p>
 
 <form action="/visit" method="POST">
@@ -23,7 +39,7 @@
   </div>
   <div class="form-group">
     <label>Когда вас ждать?</label>
-    <input name="date" type="text" class="form-control" placeholder="Дата и время" value="<%= @date %>">
+    <input id="datetimepicker" name="date" type="text" class="form-control" placeholder="Дата и время" value="<%= @date %>">
   </div>
   <div class="form-group">
   <label>Выберите парикмахера</label>
