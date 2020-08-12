@@ -12,6 +12,11 @@ def get_db
 		return db
 end
 
+def get_dbbarbers
+		dbbarbers = SQLite3::Database.new 'Barbers.db'
+		return dbbarbers
+end
+
 configure do
 	db = get_db
 	db.execute	'CREATE TABLE IF NOT EXISTS
@@ -24,6 +29,13 @@ configure do
     		"color" TEXT)'
 end
 
+configure do
+	dbarbers = get_dbbarbers
+	dbarbers.execute	'CREATE TABLE IF NOT EXISTS
+			"Barbers" (
+			"barbername" TEXT PRIMARY KEY UNIQUE)'
+end
+
 get '/' do
 	erb "Hello! <a href=\"https://github.com/bootstrap-ruby/sinatra-bootstrap\">Original</a> pattern has been modified for <a href=\"http://rubyschool.us/\">Ruby School</a>"			
 end
@@ -34,6 +46,11 @@ get '/about' do
 end
 
 get '/visit' do
+	@barbers = []
+	dbbarbers = get_dbbarbers
+	dbbarbers.execute 'SELECT * from Barbers' do |row|
+        @barbers = @barbers + row
+end
 	erb :visit
 end
 
@@ -43,6 +60,7 @@ post '/visit' do
 	@date = params[:date]
 	@barber = params[:barber]
 	@color = params[:color]
+	@barbers = params[:@barbers]
 
 	hh = { 	:username => 'Пустое имя!',
 			:phone => 'Пустой номер телефона!',
@@ -52,6 +70,11 @@ post '/visit' do
 
 
 	if @error != ''
+			@barbers = []
+			dbbarbers = get_dbbarbers
+			dbbarbers.execute 'SELECT * from Barbers' do |row|
+        	@barbers = @barbers + row
+        end
 		return erb :visit
 	end
 
@@ -111,7 +134,11 @@ post '/contacts' do
 end
 
 get '/showusers' do
-	erb "Hello World"
+	db = get_db
+		db.execute 'SELECT * FROM Users ORDER BY id DESC' do |row|
+ 			@userlist = "#{@userlist}#{row['id']}.     Имя: #{row['username']}.     Номер телефона: #{row['phone']}.     Дата: #{row['datestamp']}.     Мастер: #{row['barber']}.     Цвет: #{row['color']}.<br><br>"
+		end
+	erb :showusers
 end
 
 

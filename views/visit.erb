@@ -4,6 +4,7 @@
     
   </head>
   <body>
+
 <h2>Записаться</h2>
 <script type="text/javascript">
     $(function(){
@@ -40,12 +41,16 @@
     <label>Когда вас ждать?</label>
     <input id="datetimepicker" name="date" type="text" class="form-control" placeholder="Дата и время" value="<%= @date %>">
   </div>
-  <div class="form-group">
+
+ <div class="form-group">
   <label>Выберите парикмахера</label>
   <p><select class="form-control" name="barber">
-    <option <%= @barber == 'Walter White' ? 'selected' : '' %>>Walter White</option>
-    <option <%= @barber == 'Jessie Pinkman' ? 'selected' : '' %>>Jessie Pinkman</option>
-    <option <%= @barber == 'Gus Fring' ? 'selected' : '' %>>Gus Fring</option>
+    <% @barbers.each {|x| %>
+
+        <option <%= @barber == x ? 'selected' : '' %>><%= x %></option>
+
+    <% } %>
+    
    </select></p>
  </div>
 
